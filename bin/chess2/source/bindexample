@@ -1,0 +1,182 @@
+package chess2.Activities;
+
+import ServerStuff.ChessClass;
+import chess2.Services.ChessService;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
+;
+import android.support.v7.widget.ListPopupWindow;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+
+import com.botna.chess2.R;
+
+public class NewGameActivity extends ActionBarActivity {
+	protected ChessClass theGame = null;
+    public static final String PREFERENCES = "com.botna.chess2";
+	protected String variant = null;
+	protected String[] variants={"Classic", "Reapers", "Nemesis","Empowered",
+			"Animals","Two Kings"};
+
+    Intent myService;
+//    ChessService myService;
+//    boolean isBound = false;
+
+//    private ServiceConnection myConnection = new ServiceConnection() {
+//
+//        public void onServiceConnected(ComponentName className,
+//                                       IBinder service) {
+//            ChessService.MyLocalBinder binder = (ChessService.MyLocalBinder) service;
+//            myService = binder.getService();
+//            isBound = true;
+//        }
+//
+//        public void onServiceDisconnected(ComponentName arg0) {
+//            isBound = false;
+//        }
+//
+//    };
+
+
+    private BroadcastReceiver broadCastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          //  updateActivity(intent);
+            int count = 1;
+            count ++;
+        }
+    };
+
+
+
+
+    @Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+       // Intent intent = new Intent(this, ChessService.class);
+      //  bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+
+        myService = new Intent(this, ChessService.class);
+	}
+
+    @Override
+    public void onResume()
+    {
+        registerReceiver(broadCastReceiver, new IntentFilter(ChessService.SERVER_RESPONSE));
+        super.onResume();
+        SharedPreferences prefs = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        String restoredUName = prefs.getString("USERNAME", null);
+        String restoredPWord = prefs.getString("PASSWORD", null);
+        setContentView(R.layout.new_game_menu);
+
+        //we attempt to 'relog' everytime resume is called.
+        //Since we have the ability to lose our
+        myService.putExtra("STATE", "LOGINATTEMPT");
+        String[] temp = new String[2];
+        temp[0] = restoredUName;
+        temp[1] = restoredPWord;
+        myService.putExtra("PAYLOAD", temp);
+        startService(myService);
+
+
+
+
+    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		//getMenuInflater().inflate(R.menu.main_activity_actions, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+
+
+	public void sendRequest(View view)
+	{
+
+		ClassChoiceDialog choiceDialog = new ClassChoiceDialog();
+		FragmentManager fm = getSupportFragmentManager();
+		choiceDialog.show(fm, "Dialog Fragment");
+
+
+
+	}
+
+    @SuppressLint("ValidFragment")
+	public class ClassChoiceDialog extends DialogFragment{
+
+		 public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			 builder.setTitle("Choose a class").setItems(variants, new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					Bundle b = new Bundle();
+					Intent i = new Intent();
+					EditText editText = (EditText) findViewById(R.id.username);
+
+					b.putString("MODE", "NEWGAME");
+					b.putString("CLASS", variants[which]);
+					b.putString("OPPONENT", editText.getText().toString());
+
+					i.putExtras(b);
+					setResult(RESULT_OK, i);
+					finish();
+				}
+			});
+
+
+			 return builder.create();
+		 }
+	}
+
+}
+
+
+within the service
+
+ private final IBinder myBinder = new MyLocalBinder();
+
+ @Override
+    public IBinder onBind(Intent intent) {
+        return myBinder;
+    }
+
+    public class MyLocalBinder extends Binder {
+       public ChessService getService() {
+            return ChessService.this;
+        }
+    }

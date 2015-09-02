@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/Users/Botna/AndroidStudioProjects/Chess2/app/src/main/java/chess2/source"/>
+	<classpathentry kind="lib" path="C:/Chess2Server/jackson-databind-2.5.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Botna/Downloads/gcm-76908409d9d5/gcm-76908409d9d5/gcm-server/lib/json_simple-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Botna/Downloads/gcm-76908409d9d5/gcm-76908409d9d5/gcm-server/lib/junit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Botna/Downloads/gcm-76908409d9d5/gcm-76908409d9d5/gcm-server/lib/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
