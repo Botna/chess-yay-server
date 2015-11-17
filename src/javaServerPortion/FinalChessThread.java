@@ -17,6 +17,23 @@ import serverClasses.FileClass;
 
 public class FinalChessThread extends Thread {
 
+	
+	
+	//---------------------------------------------------------------------
+	//
+	//  GAME VERSION.  UPDATE ME!
+	//
+	//---------------------------------------------------------------------
+	
+	private final String CURR_VERSION = "1.5";
+	//---------------------------------------------------------------------
+	//
+	//  GAME VERSION.  UPDATE ME!
+	//
+	//---------------------------------------------------------------------
+	
+	
+	
 	private Socket serverSocket = null;
 
 	private final String LOGGED = "LOGGED";
@@ -94,12 +111,18 @@ public class FinalChessThread extends Thread {
 							switch(packet.charAt(0))
 							{
 							case '1':
+//								This works as the generic 'entry point' for any further activities that need to happen.  
+								//Thus, this checks game version to make sure its up to date.  Since for the time being,
+								//i dont expect this packet format to change, it will send back a string of the current version of the game
+								//client will check it and tell the user to update if its out of date.
+								
 								//Login Request
 								//packet format = 1:Username:Password
 								returnPacket = login(packet);
 								//response format = 1:0:X for success with messages
 								//					1:1:X for wrong password
 								//					1:2:X for user doesn't exist.
+								
 								break;
 							case '2':
 								//Current Games
@@ -325,6 +348,9 @@ public class FinalChessThread extends Thread {
 			me.setRegID(splitString[3]);
 			theFiles.updatePlayer(me);
 		}
+		
+		//append current verison on the end of returnstring to be checked by the client
+		returnString = returnString + ":" + CURR_VERSION;
 		return returnString;
 
 	}
@@ -525,8 +551,6 @@ public class FinalChessThread extends Thread {
 		//if we get here, our UUID is ok.
 		return returnPacket;
 	}
-
-
 
 	public GameBoard sendGame(String packet)
 	{
@@ -764,7 +788,6 @@ public class FinalChessThread extends Thread {
 		return split[0] + ":" + "Game Not Found";
 	}
 
-
 	private String startSkirmish(String packet)
 	{
 		String[] split = packet.split(":");
@@ -904,6 +927,7 @@ public class FinalChessThread extends Thread {
 		}
 		return split[0] + ":" + "Game Not Found";
 	}
+	
 	private String enactSkirmish(String packet) {
 
 
@@ -1038,7 +1062,6 @@ public class FinalChessThread extends Thread {
 		}
 		return split[0] + ":Game Not Found";
 	}
-
 
 	private String forfeitGame(String packet) {
 		String[] split = packet.split(":");

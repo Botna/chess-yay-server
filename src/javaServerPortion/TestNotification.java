@@ -10,7 +10,7 @@ public class TestNotification
 	
 	public static void main(String[] args)
 	{
-		String message ="Go update!";
+		String message ="Fixed my shit! Update!";
 	
 		ServerPusher.pushMessageNotification("neil","Chess2", message);
 		ServerPusher.pushMessageNotification("matt","Chess2", message);
